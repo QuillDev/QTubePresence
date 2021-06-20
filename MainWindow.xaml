@@ -7,5 +7,6 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid x:Name="RootGrid">
+        <ListBox x:Name="List"></ListBox>
     </Grid>
 </Window>

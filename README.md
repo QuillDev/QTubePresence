@@ -4,4 +4,7 @@
 
 ## Supported Browsers
 
-- Firefox
+- Firefox (v89.0.1 Tested)
+
+## Supported Operating Systems
+- Windows (10 Tested)

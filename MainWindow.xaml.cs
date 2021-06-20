@@ -5,8 +5,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Threading;
 using DiscordRPC;
+using DiscordRPC.Message;
 using QTubePresence.Core;
 using Label = System.Windows.Controls.Label;
 
@@ -26,7 +28,9 @@ namespace QTubePresence
             new Regex(@"(\([0-9]*\)?)", RegexOptions.Compiled);
 
         private static DiscordRpcClient _client;
-        private readonly Label _label = new Label();
+
+        private readonly Label _playingLabel = new Label();
+        private readonly Label _statusLabel = new Label();
 
         public MainWindow()
         {
@@ -34,14 +38,26 @@ namespace QTubePresence
 
             InitializeComponent();
 
+            //Create a client connection with discord
             _client = new DiscordRpcClient("856048168060059668");
-
+            _client.OnReady += OnReadyTrigger;
+            //Set the status of the client
+            _statusLabel.Content = "Connecting...";
+            //initialize the client
             _client.Initialize();
 
-            _label.Content = "XD";
-            RootGrid.Children.Add(_label);
+
+            RootGrid.Children.Add(_playingLabel);
+            RootGrid.Children.Add(_statusLabel);
 
             Task.Run(UpdateTitleList);
+        }
+
+
+        private void OnReadyTrigger(object sender, ReadyMessage args)
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => { _statusLabel.Content = "Connected!"; }),
+                DispatcherPriority.Render);
         }
 
         private async Task UpdateTitleList()
@@ -71,7 +87,7 @@ namespace QTubePresence
                                 {
                                     new Button()
                                     {
-                                        Label = "Listen",
+                                        Label = "Listen (WIP)",
                                         Url = "https://moe.quill/",
                                     }
                                 }
@@ -82,7 +98,7 @@ namespace QTubePresence
                             // ignored
                         }
 
-                        _label.Content = titleToShow;
+                        _playingLabel.Content = titleToShow;
                     }), DispatcherPriority.Render);
                     Thread.Sleep(3000);
                 }
